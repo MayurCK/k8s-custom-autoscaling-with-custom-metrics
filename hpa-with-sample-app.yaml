@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sampleapp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+    spec:
+      containers:
+      - name: sampleapp-ctr
+        image: httpd:latest
+        ports:
+        - name: web
+          containerPort: 80
+---
+#------------------------svc for sample app-----------------------#
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: sampleapp
+  name: sampleapp-svc
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 80
+    name: http
+  selector:
+    app: sampleapp 
+---
+#------------------------hpa for sample app-----------------------#
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sampleapp-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: sampleapp 
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Object
+    object:
+      target:
+        kind: Pod
+        name: example-app-788775cf87-mxql6
+      metricName: queued_req
+      targetValue: 5
