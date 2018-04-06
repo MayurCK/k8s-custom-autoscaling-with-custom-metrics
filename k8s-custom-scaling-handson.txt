@@ -1,0 +1,20 @@
+exporter hands on:
+
+
+deployment, svc , svc monitor and prometheus instance selection label
+
+
+
+How to configure svc , svc monitor (svcm) and prometheus instance.:
+case 1:
+svcm name, svc name, deployment name,  worked fine.
+case2 :
+svc label != svcm selctor matchLabels: name than fail.
+
+case 3:
+
+svcm metadata labels !=  serviceMonitorSelector. matchLabels than also fail.
+
+
+case 4:
+svc port name must match with svcm endpoint and svc label must match with serviceMonitorSelector. matchLabels
